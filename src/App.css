@@ -1,3 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-black min-h-screen;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
