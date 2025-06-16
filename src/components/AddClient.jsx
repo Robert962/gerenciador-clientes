@@ -27,6 +27,11 @@ function AddClient({ onAddClient }) {
       setError("E-mail inválido.");
       return;
     }
+    // Validação do campo telefone
+    if (phone && !/^\(\d{2}\)\s?\d{4,5}-?\d{4}$/.test(phone)) {
+      setError("Telefone inválido. Use o formato (43) 99875-7065.");
+      return;
+    }
     setError("");
     // Chama a função recebida por props para adicionar o cliente, usando 'nome_completo' ao invés de 'nome'
     onAddClient({ nome_completo: name, email, telefone: phone });
@@ -34,6 +39,20 @@ function AddClient({ onAddClient }) {
     setName("");
     setEmail("");
     setPhone("");
+  }
+
+  // Função para formatar o telefone automaticamente
+  function handlePhoneChange(e) {
+    let value = e.target.value.replace(/\D/g, ""); // Remove tudo que não for número
+    if (value.length > 2) {
+      value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+    }
+    if (value.length > 10) {
+      value = value.replace(/(\(\d{2}\) \d{5})(\d{4})/, "$1-$2");
+    } else if (value.length > 9) {
+      value = value.replace(/(\(\d{2}\) \d{4})(\d{4})/, "$1-$2");
+    }
+    setPhone(value);
   }
 
   return (
@@ -63,10 +82,12 @@ function AddClient({ onAddClient }) {
       />
       <input
         type="text"
-        placeholder="Telefone (opcional)"
+        placeholder="Telefone (com DDD)"
         value={phone}
-        onChange={e => setPhone(e.target.value)}
+        onChange={handlePhoneChange}
         className="p-3 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition w-full bg-white text-blue-900 placeholder:text-blue-400"
+        pattern="^\(\d{2}\)\s?\d{4,5}-?\d{4}$"
+        title="Digite o telefone no formato (43) 99875-7065"
       />
       {/* Exibe mensagem de erro, se houver */}
       {error && <div className="text-red-600 text-sm text-center font-semibold">{error}</div>}
